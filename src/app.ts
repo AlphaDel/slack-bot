@@ -11,17 +11,17 @@ const app = new App({
   },
 })
 
-const enterReplies = ['Hi', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
-const leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
-const randomEnterReply = () => enterReplies[Math.floor(Math.random() * enterReplies.length)]
-const randomLeaveReply = () => leaveReplies[Math.floor(Math.random() * leaveReplies.length)]
+// const enterReplies = ['Hi', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
+// const leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
+// const randomEnterReply = () => enterReplies[Math.floor(Math.random() * enterReplies.length)]
+// const randomLeaveReply = () => leaveReplies[Math.floor(Math.random() * leaveReplies.length)]
 
-app.event('member_joined_channel', async ({ say }) => {
-  await say(randomEnterReply())
-})
-app.event('member_left_channel', async ({ say }) => {
-  await say(randomLeaveReply())
-})
+// app.event('member_joined_channel', async ({ say }) => {
+//   await say(randomEnterReply())
+// })
+// app.event('member_left_channel', async ({ say }) => {
+//   await say(randomLeaveReply())
+// })
 
 app.message(':wave:', async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`)
