@@ -7,14 +7,14 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   endpoints: {
     events: '/slack/events',
-    commands: '/slack/commands' 
-  }
+    commands: '/slack/commands',
+  },
 })
 
 const enterReplies = ['Hi', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
 const leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
-const randomEnterReply = () => enterReplies[Math.floor(Math.random() * enterReplies.length)];
-const randomLeaveReply = () => leaveReplies[Math.floor(Math.random() * leaveReplies.length)];
+const randomEnterReply = () => enterReplies[Math.floor(Math.random() * enterReplies.length)]
+const randomLeaveReply = () => leaveReplies[Math.floor(Math.random() * leaveReplies.length)]
 
 app.event('member_joined_channel', async ({ say }) => {
   await say(randomEnterReply())
@@ -30,7 +30,7 @@ app.message(':wave:', async ({ message, say }) => {
 app.command('/generate-token-dfl', async ({ command, ack, say }) => {
   await ack()
   try {
-    const data = {
+    const payload = {
       code: 'appman',
       device_id: '1234567890',
       oauth_flag: 'Y',
@@ -38,7 +38,7 @@ app.command('/generate-token-dfl', async ({ command, ack, say }) => {
       client_secret: 'c986c721fc563985b17f49676862d4d6fa88770a',
       version_no: '3.0.0',
     }
-    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data })
+    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
     const tokenPretty = JSON.stringify(token, null, 4).trim()
     say(`\`\`\`${tokenPretty}\`\`\`\n*Please do not forget to update <${config.TOKEN_PIN_URL_SLACK}|the token post>* :wowwow:<@${command.user_id}>:wowwow:`)
   } catch (error) {
@@ -49,7 +49,7 @@ app.command('/generate-token-dfl', async ({ command, ack, say }) => {
 app.command('/generate-token-azd', async ({ command, ack, say }) => {
   await ack()
   try {
-    const data = {
+    const payload = {
       code: 'appman',
       device_id: '1234567890',
       oauth_flag: 'Y',
@@ -57,7 +57,7 @@ app.command('/generate-token-azd', async ({ command, ack, say }) => {
       client_secret: '312e97a6efd76341a6950c352b1ed7f894ae6e09',
       version_no: '1.0.0',
     }
-    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data })
+    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
     const tokenPretty = JSON.stringify(token, null, 4).trim()
     say(`\`\`\`${tokenPretty}\`\`\`\n*Please do not forget to update <${config.TOKEN_PIN_URL_SLACK}|the token post>* :wowwow:<@${command.user_id}>:wowwow:`)
   } catch (error) {
@@ -75,7 +75,7 @@ app.command('/delete-sign-azd', async ({ command, ack, respond, say }) => {
   } 
   try {
     const payload = {
-      fieldId: command.text
+      fieldId: command.text,
     }
     const { isDelete } = await requestAPI({ url: `${config.BACKEND_APPMAN_URL}${config.DELETE_SIGN_AZD_URL}`, data: payload})
     if (isDelete) {
@@ -91,7 +91,7 @@ app.command('/delete-sign-azd', async ({ command, ack, respond, say }) => {
 })
 
 app.error(async error => {
-  const message = `DOES NOT COMPUTE: ${error.toString()}`;
+  const message = `DOES NOT COMPUTE: ${error.toString()}`
   console.error(message)
 })
 

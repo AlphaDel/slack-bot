@@ -17,8 +17,9 @@ module.exports = {
     project: './tsconfig.eslint.json',
   },
   rules: {
-    'semi': 'off',
+    'semi': ['error', 'never'],
     'no-return-await': 'off',
     'consistent-return': 'off',
-  }, 
+    'comma-dangle': ['error', 'always-multiline'],
+  },
 }

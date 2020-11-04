@@ -12,8 +12,8 @@ const requestAPI = async ({ url, data }: ServiceData): Promise<any> => {
     {
       headers: {
         'Content-type': 'application/json',
-      }
-    }
+      },
+    },
   )
   return response
 }
