@@ -1,5 +1,10 @@
 import { App } from '@slack/bolt'
-import requestAPI from './services'
+import { BlockButtonAction } from '@slack/bolt/dist/types/actions' 
+import {
+  RequestAPI,
+  GetJobIdWithName,
+  ApproveJobWithId,
+} from './services'
 import config from './config'
 
 const app = new App({
@@ -8,6 +13,7 @@ const app = new App({
   endpoints: {
     events: '/slack/events',
     commands: '/slack/commands',
+    interactive: '/slack/interactive',
   },
 })
 
@@ -38,11 +44,11 @@ app.command('/generate-token-dfl', async ({ command, ack, say }) => {
       client_secret: 'c986c721fc563985b17f49676862d4d6fa88770a',
       version_no: '3.0.0',
     }
-    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
+    const token = await RequestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
     const tokenPretty = JSON.stringify(token, null, 4).trim()
     say(`\`\`\`${tokenPretty}\`\`\`\n*Please do not forget to update <${config.TOKEN_PIN_URL_SLACK}|the token post>* :wowwow:<@${command.user_id}>:wowwow:`)
   } catch (error) {
-    console.log('error: ', error)
+    console.log( error)
   }
 })
 
@@ -57,11 +63,11 @@ app.command('/generate-token-azd', async ({ command, ack, say }) => {
       client_secret: '312e97a6efd76341a6950c352b1ed7f894ae6e09',
       version_no: '1.0.0',
     }
-    const token = await requestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
+    const token = await RequestAPI({ url: config.REQUEST_TOKEN_URL, data: payload })
     const tokenPretty = JSON.stringify(token, null, 4).trim()
     say(`\`\`\`${tokenPretty}\`\`\`\n*Please do not forget to update <${config.TOKEN_PIN_URL_SLACK}|the token post>* :wowwow:<@${command.user_id}>:wowwow:`)
   } catch (error) {
-    console.log('error: ', error)
+    console.log(error)
   }
 })
 
@@ -69,23 +75,99 @@ app.command('/delete-sign-azd', async ({ command, ack, respond, say }) => {
   await ack()
   if (command.text === undefined || command.text === '' || command.text === null) {
     return respond({
-      response_type: 'ephemeral',
       text: `Please specify your file ID to delete.`,
+      response_type: 'ephemeral',
+      replace_original: false,
     })
   } 
   try {
     const payload = {
       fieldId: command.text,
     }
-    const { isDelete } = await requestAPI({ url: `${config.BACKEND_APPMAN_URL}${config.DELETE_SIGN_AZD_URL}`, data: payload})
+    const { isDelete } = await RequestAPI({ url: `${config.BACKEND_APPMAN_URL}/${config.DELETE_SIGN_AZD_URL}`, data: payload})
     if (isDelete) {
       say(`<@${command.user_id}> File: \`${payload.fieldId}\` was deleted.`)
     }
   } catch (error) {
     console.log(error)
     respond({
+      text: error,
       response_type: 'ephemeral',
-      text: `Error: ${error}`,
+      replace_original: false,
+    })
+  }
+})
+
+const ApproveJob = async ({ workflowId, jobName }: { workflowId: string, jobName: string }) => {
+  try {
+    console.log('workflowId: ', workflowId, ' jobName: ', jobName)
+    const jobId = await GetJobIdWithName({ url: `${config.CIRCLECI_API}/workflow/${workflowId}/job`, data: { jobName } })
+    console.log('jobId: ', jobId)
+    if (!jobId) {
+      throw new Error(`Job not found (workflow ID: \`${workflowId}\`).`)
+    }
+    await ApproveJobWithId({ url: `${config.CIRCLECI_API}/workflow/${workflowId}/approve/${jobId}`})
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+app.action('action_circleci_approve_azd_release_uat', async ({ ack, respond, body }) => {
+  await ack()
+  await respond({
+    text: '🤖 Roger that!, executing your order...',
+    response_type: 'ephemeral',
+    replace_original: false,
+  })
+  try {
+    const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
+    await ApproveJob({ workflowId, jobName: 'approval' })
+  } catch (error) {
+    console.log(error.message)
+    await respond({
+      text: error.message,
+      response_type: 'ephemeral',
+      replace_original: false,
+    })
+  }
+})
+
+app.action('action_circleci_approve_azd_release_dev', async ({ ack, respond, body }) => {
+  await ack()
+  await respond({
+    text: '🤖 Roger that!, executing your order...',
+    response_type: 'ephemeral',
+    replace_original: false,
+  })
+  try {
+    const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
+    await ApproveJob({ workflowId, jobName: 'approval_dev' })
+  } catch (error) {
+    console.log(error.message)
+    await respond({
+      text: error.message,
+      response_type: 'ephemeral',
+      replace_original: false,
+    })
+  }
+})
+
+app.action('action_circleci_approve_azd_release_pa', async ({ ack, respond, body }) => {
+  await ack()
+  await respond({
+    text: '🤖 Roger that!, executing your order...',
+    response_type: 'ephemeral',
+    replace_original: false,
+  })
+  try {
+    const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
+    await ApproveJob({ workflowId, jobName: 'approval_pa' })
+  } catch (error) {
+    console.log(error.message)
+    await respond({
+      text: error.message,
+      response_type: 'ephemeral',
+      replace_original: false,
     })
   }
 })

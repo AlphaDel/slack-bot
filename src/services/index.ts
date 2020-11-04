@@ -1,11 +1,13 @@
 import axios from 'axios'
+import { AzayRequestTokenData, AzayDeleteSignData } from '../types/azay'
+import { CircleCiData } from '../types/circleci'
 
 interface ServiceData {
   url: string,
-  data: object,
+  data?: AzayRequestTokenData | CircleCiData | AzayDeleteSignData,
 }
 
-const requestAPI = async ({ url, data }: ServiceData): Promise<any> => {
+const RequestAPI = async ({ url, data }: ServiceData): Promise<any> => {
   const { data: response } = await axios.post(
     url,
     data,
@@ -18,4 +20,40 @@ const requestAPI = async ({ url, data }: ServiceData): Promise<any> => {
   return response
 }
 
-export default requestAPI
+const GetJobIdWithName = async ({ url, data }: ServiceData): Promise<any> => {
+   const { data: response } = await axios.get(
+    url,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Circle-Token': process.env.CIRCLECI_TOKEN,
+      },
+    },
+  )
+  const jobs: any[] = response.items
+  const { id = '' }: { id?: string } = jobs.find((job) => job.name === (<CircleCiData>data).jobName) || null
+  return id
+}
+
+const ApproveJobWithId = async ({ url }: ServiceData): Promise<any> => {
+  const { status, data: response } = await axios.post(
+    url,
+    undefined,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Circle-Token': process.env.CIRCLECI_TOKEN,
+      },
+      validateStatus: () => true,
+    },
+  )
+  if (status !== 202) {
+    throw new Error(`status: ${status}\nmessage: ${response.message}`)
+  }
+}
+
+export {
+  RequestAPI,
+  GetJobIdWithName,
+  ApproveJobWithId,
+}
