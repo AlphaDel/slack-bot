@@ -17,18 +17,6 @@ const app = new App({
   },
 })
 
-// const enterReplies = ['Hi', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
-// const leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
-// const randomEnterReply = () => enterReplies[Math.floor(Math.random() * enterReplies.length)]
-// const randomLeaveReply = () => leaveReplies[Math.floor(Math.random() * leaveReplies.length)]
-
-// app.event('member_joined_channel', async ({ say }) => {
-//   await say(randomEnterReply())
-// })
-// app.event('member_left_channel', async ({ say }) => {
-//   await say(randomLeaveReply())
-// })
-
 app.message(':wave:', async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`)
 })
@@ -98,6 +86,10 @@ app.command('/delete-sign-azd', async ({ command, ack, respond, say }) => {
   }
 })
 
+app.action('button-visit-workflow-action', async ({ ack }) => {
+  await ack()
+})
+
 const ApproveJob = async ({ workflowId, jobName }: { workflowId: string, jobName: string }) => {
   try {
     console.log('workflowId: ', workflowId, ' jobName: ', jobName)
@@ -112,7 +104,7 @@ const ApproveJob = async ({ workflowId, jobName }: { workflowId: string, jobName
   }
 }
 
-app.action('action_circleci_approve_azd_release_uat', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_UAT', async ({ ack, respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',
@@ -132,13 +124,14 @@ app.action('action_circleci_approve_azd_release_uat', async ({ ack, respond, bod
   }
 })
 
-app.action('action_circleci_approve_azd_release_dev', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_DEV', async ({ ack, respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',
     response_type: 'ephemeral',
     replace_original: false,
   })
+  
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
     await ApproveJob({ workflowId, jobName: 'approval_dev' })
@@ -152,7 +145,7 @@ app.action('action_circleci_approve_azd_release_dev', async ({ ack, respond, bod
   }
 })
 
-app.action('action_circleci_approve_azd_release_pa', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_PA', async ({ ack, respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',

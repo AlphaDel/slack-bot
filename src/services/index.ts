@@ -48,7 +48,7 @@ const ApproveJobWithId = async ({ url }: ServiceData): Promise<any> => {
     },
   )
   if (status !== 202) {
-    throw new Error(`status: ${status}\nmessage: ${response.message}`)
+    throw new Error(`Error: ${response.message}`)
   }
 }
 
