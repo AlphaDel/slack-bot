@@ -77,9 +77,9 @@ app.command('/delete-sign-azd', async ({ command, ack, respond, say }) => {
       say(`<@${command.user_id}> File: \`${payload.fieldId}\` was deleted.`)
     }
   } catch (error) {
-    console.log(error)
+    console.log(error.message)
     respond({
-      text: error,
+      text: error.message,
       response_type: 'ephemeral',
       replace_original: false,
     })
