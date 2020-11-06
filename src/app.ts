@@ -104,7 +104,7 @@ const ApproveJob = async ({ workflowId, jobName }: { workflowId: string, jobName
   }
 }
 
-app.action('action_circleci_approve_azd_release_UAT', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_UAT', async ({ ack, say,respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',
@@ -114,6 +114,7 @@ app.action('action_circleci_approve_azd_release_UAT', async ({ ack, respond, bod
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
     await ApproveJob({ workflowId, jobName: 'approval' })
+    await say(`<@${body.user.id}> Job release to MSUB(UAT) was Approved.`)
   } catch (error) {
     console.log(error.message)
     await respond({
@@ -124,7 +125,7 @@ app.action('action_circleci_approve_azd_release_UAT', async ({ ack, respond, bod
   }
 })
 
-app.action('action_circleci_approve_azd_release_DEV', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_DEV', async ({ ack, say, respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',
@@ -135,6 +136,7 @@ app.action('action_circleci_approve_azd_release_DEV', async ({ ack, respond, bod
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
     await ApproveJob({ workflowId, jobName: 'approval_dev' })
+    await say(`<@${body.user.id}> Job release to MSUB(DEV) was Approved.`)
   } catch (error) {
     console.log(error.message)
     await respond({
@@ -145,7 +147,7 @@ app.action('action_circleci_approve_azd_release_DEV', async ({ ack, respond, bod
   }
 })
 
-app.action('action_circleci_approve_azd_release_PA', async ({ ack, respond, body }) => {
+app.action('action_circleci_approve_azd_release_PA', async ({ ack, say, respond, body }) => {
   await ack()
   await respond({
     text: '🤖 Roger that!, executing your order...',
@@ -155,6 +157,7 @@ app.action('action_circleci_approve_azd_release_PA', async ({ ack, respond, body
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
     await ApproveJob({ workflowId, jobName: 'approval_pa' })
+    await say(`<@${body.user.id}> Job release to MSUB(PA) was Approved.`)
   } catch (error) {
     console.log(error.message)
     await respond({
