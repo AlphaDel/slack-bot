@@ -113,7 +113,7 @@ app.action('action_circleci_approve_azd_release_UAT', async ({ ack, say,respond,
   })
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
-    await ApproveJob({ workflowId, jobName: 'approval' })
+    await ApproveJob({ workflowId, jobName: 'approval_msub' })
     await say(`<@${body.user.id}> Job release to MSUB(UAT) was Approved.`)
   } catch (error) {
     console.log(error.message)
@@ -135,7 +135,7 @@ app.action('action_circleci_approve_azd_release_DEV', async ({ ack, say, respond
   
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
-    await ApproveJob({ workflowId, jobName: 'approval_dev' })
+    await ApproveJob({ workflowId, jobName: 'approval_msub_dev' })
     await say(`<@${body.user.id}> Job release to MSUB(DEV) was Approved.`)
   } catch (error) {
     console.log(error.message)
@@ -156,7 +156,7 @@ app.action('action_circleci_approve_azd_release_PA', async ({ ack, say, respond,
   })
   try {
     const { value: workflowId }: { value: string } = (<BlockButtonAction>body).actions[0]
-    await ApproveJob({ workflowId, jobName: 'approval_pa' })
+    await ApproveJob({ workflowId, jobName: 'approval_msub_pa' })
     await say(`<@${body.user.id}> Job release to MSUB(PA) was Approved.`)
   } catch (error) {
     console.log(error.message)
