@@ -1,10 +1,11 @@
 import { App } from '@slack/bolt'
-import { BlockButtonAction } from '@slack/bolt/dist/types/actions' 
+import { BlockButtonAction, } from '@slack/bolt/dist/types/actions' 
 import {
   RequestAPI,
   GetJobIdWithName,
   ApproveJobWithId,
 } from './services'
+import { CreatePullRequest } from './services/github'
 import config from './config'
 
 const app = new App({
@@ -19,6 +20,62 @@ const app = new App({
 
 app.message(':wave:', async ({ message, say }) => {
   await say(`Hello, <@${message.user}>`)
+})
+
+app.command('/release-azd', async ({ command, say, ack, respond }) => {
+  await ack()
+  await respond({
+    text: '🤖 Roger that!, executing your order...',
+    response_type: 'ephemeral',
+    replace_original: false,
+  })
+  try {
+    const base = command.text === '' ? 'release' : command.text
+    const { status, data } = await CreatePullRequest({
+      owner: 'appman-agm',
+      repo: 'azay-azd-eus',
+      title: `🆕 Release ✨${base}✨ version`,
+      head: 'develop',
+      base,
+    })
+    if (status === 201) {
+      await say(`:firer2: *The release PR has been created (AZD)* :firer2:\n \`\`\`${base} <- develop\`\`\` ${data.html_url} \n<@${command.user_id}>`)
+    }
+  } catch (errors) {
+    console.error('error: ', errors.message)
+    await respond({
+      text: `\`\`\`😣Oops!😣\n${errors.message}\`\`\``,
+      response_type: 'ephemeral',
+    })
+  }
+})
+
+app.command('/release-dfl', async ({ command, say, ack, respond }) => {
+  await ack()
+  await respond({
+    text: '🤖 Roger that!, executing your order...',
+    response_type: 'ephemeral',
+    replace_original: false,
+  })
+  try {
+    const base = command.text === '' ? 'release' : command.text
+    const { status, data } = await CreatePullRequest({
+      owner: 'appman-agm',
+      repo: 'azay-dfl-eus',
+      title: `🆕 Release ✨${base}✨ version`,
+      head: 'development',
+      base,
+    })
+    if (status === 201) {
+      await say(`:firer2: *The release PR has been created (DFL)* :firer2:\n \`\`\`${base} <- development\`\`\` ${data.html_url} \n<@${command.user_id}>`)
+    }
+  } catch (errors) {
+    console.error('error: ', errors.message)
+    await respond({
+      text: `\`\`\`😣Oops!😣\n${errors.message}\`\`\``,
+      response_type: 'ephemeral',
+    })
+  }
 })
 
 app.command('/generate-token-dfl', async ({ command, ack, say }) => {
