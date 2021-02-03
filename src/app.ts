@@ -34,7 +34,7 @@ app.command('/release-azd', async ({ command, say, ack, respond }) => {
     const { status, data } = await CreatePullRequest({
       owner: 'appman-agm',
       repo: 'azay-azd-eus',
-      title: `🆕 Release ✨${base}✨ version [automatic generated]`,
+      title: `🆕 Release ✨${base === 'release' ? 'UAT' : base}✨ version [automatic generated]`,
       head: 'develop',
       base,
     })
@@ -62,7 +62,7 @@ app.command('/release-dfl', async ({ command, say, ack, respond }) => {
     const { status, data } = await CreatePullRequest({
       owner: 'appman-agm',
       repo: 'azay-dfl-eus',
-      title: `🆕 Release ✨${base}✨ version [automatic generated]`,
+      title: `🆕 Release ✨${base === 'release' ? 'UAT' : base}✨ version [automatic generated]`,
       head: 'development',
       base,
     })
