@@ -39,7 +39,7 @@ app.command('/release-azd', async ({ command, say, ack, respond }) => {
       base,
     })
     if (status === 201) {
-      await say(`:firer2: *The release PR has been created (AZD)* :firer2:\n \`\`\`${base} <- develop\`\`\` ${data.html_url} \n<@${command.user_id}>`)
+      await say(`:firer2: *The release PR has been created (AZD)* :firer2:\n \`\`\`${base} <- develop\`\`\` ${data.html_url} \nCreated by: <@${command.user_id}> CC: <@UJ0LG0LNN> <@UG9D410HJ>`)
     }
   } catch (errors) {
     console.error('error: ', errors.message)
@@ -67,7 +67,7 @@ app.command('/release-dfl', async ({ command, say, ack, respond }) => {
       base,
     })
     if (status === 201) {
-      await say(`:firer2: *The release PR has been created (DFL)* :firer2:\n \`\`\`${base} <- development\`\`\` ${data.html_url} \n<@${command.user_id}>`)
+      await say(`:firer2: *The release PR has been created (DFL)* :firer2:\n \`\`\`${base} <- development\`\`\` ${data.html_url} \nCreated by: <@${command.user_id}> CC: <@UJ0LG0LNN> <@UG9D410HJ>`)
     }
   } catch (errors) {
     console.error('error: ', errors.message)
